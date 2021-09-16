@@ -54,18 +54,27 @@ describe('simple database', () => {
         });
     });
 
-    it.skip('should remove an object', () => {
+    it('should remove an object', () => {
         const simpleDb = new SimpleDb(rootDir);
-        const fakeObject = { data: 'fake' };
-        const shouldBeNull = simpleDb.save(fakeObject).then((id) => {
-            simpleDb.get(id).then((obj) => {
-                simpleDb
-                    .delete(obj.id)
-                    .then(simpleDb.get(obj.id))
-                    .catch((err) => console.error(err));
-            });
+        const fakeObjects = [{ data: 'fake1' }, { data: 'fake2' }];
+        return simpleDb.save(fakeObjects[0]).then(() => {
+            return simpleDb
+                .save(fakeObjects[1])
+                .then((id) => {
+                    return simpleDb.remove(id);
+                })
+                .then(() => {
+                    return simpleDb.getAll();
+                })
+                .then((result) => {
+                    expect(result).toStrictEqual([
+                        {
+                            id: expect.any(String),
+                            data: 'fake1',
+                        },
+                    ]);
+                });
         });
-        expect(shouldBeNull).toEqual(null);
         //save an object, get back its id
         //use the id to get to make sure the object is really there
         //delete the object

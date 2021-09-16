@@ -39,4 +39,9 @@ export class SimpleDb {
       );
     });
   }
+
+  remove(id) {
+    const fileToRemove = path.join(this.path, id);
+    return fs.rm(fileToRemove);
+  }
 }
