@@ -9,7 +9,7 @@ describe('simple database', () => {
         mkdirSync(rootDir);
     });
 
-    it('should return an id when an object is saved', () => {
+    itskip('should return an id when an object is saved', () => {
         const simpleDb = new SimpleDb(rootDir);
         return simpleDb.save({ data: 'fake data' }).then((id) => {
             expect(id).toEqual(expect.any(String));
@@ -39,25 +39,27 @@ describe('simple database', () => {
 
     it('should return all the objects in the root directory', () => {
         const simpleDb = new SimpleDb(rootDir);
-        const allObjects = [
+        const allObjects = new Set([
             { data: 'fake1' },
             { data: 'fake2' },
             { data: 'fake3' },
-        ];
+        ]);
         allObjects.forEach((obj) => simpleDb.save(obj));
         return simpleDb.getAll().then((results) => {
-            expect(results).toStrictEqual([
-                { id: expect.any(String), data: 'fake1' },
-                { id: expect.any(String), data: 'fake2' },
-                { id: expect.any(String), data: 'fake3' },
-            ]);
+            expect(new Set(results)).toStrictEqual(
+                new Set([
+                    { id: expect.any(String), data: 'fake1' },
+                    { id: expect.any(String), data: 'fake2' },
+                    { id: expect.any(String), data: 'fake3' },
+                ])
+            );
         });
     });
 
     it('should remove an object', () => {
         const simpleDb = new SimpleDb(rootDir);
         const fakeObjects = [{ data: 'fake1' }, { data: 'fake2' }];
-        return simpleDb.save(fakeObjects[0]).then(() => {
+        simpleDb.save(fakeObjects[0]).then(() => {
             return simpleDb
                 .save(fakeObjects[1])
                 .then((id) => {
@@ -75,25 +77,23 @@ describe('simple database', () => {
                     ]);
                 });
         });
-        //save an object, get back its id
-        //use the id to get to make sure the object is really there
-        //delete the object
-        //use get with the id again to check the object really got deleted
     });
 
     it.skip('should update an object', () => {
         const simpleDb = new SimpleDb(rootDir);
         const fakeObject = { data: 'fake' };
         const objToUpDateWith = { data: 'updated fake' };
-        const updated = simpleDb.save(fakeObject).then((id) => {
-            simpleDb
-                .update(id, objToUpDateWith)
-                .then((id) => simpleDb.get(id))
-                .catch((err) => console.error(err));
-        });
-        expect(updated).toStrictEqual({
-            id: expect.any(String),
-            data: 'updated fake',
+        simpleDb.save(fakeObject).then((id) => {
+            return simpleDb
+                .update(id, { ...objToUpDateWith, id })
+                .then((id) => {
+                    return simpleDb.get(id).then((updated) => {
+                        expect(updated).toStrictEqual({
+                            id: expect.any(String),
+                            data: 'updated fake',
+                        });
+                    });
+                });
         });
     });
 });
