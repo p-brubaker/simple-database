@@ -30,12 +30,11 @@ describe('simple database', () => {
         });
     });
 
-    it.skip('should return null for a non-existant id', () => {
+    it('should return null for a non-existant id', () => {
         const simpleDb = new SimpleDb(rootDir);
-        const noIdResult = simpleDb
-            .get('thisIdDoesNotExist')
-            .catch((err) => console.error(err));
-        expect(noIdResult).toEqual(null);
+        return simpleDb.get('thisIdDoesNotExist').then((result) => {
+            expect(result).toEqual(null);
+        });
     });
 
     it.skip('should return all the objects in the root directory', () => {

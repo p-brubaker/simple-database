@@ -20,8 +20,13 @@ export class SimpleDb {
 
   get(id) {
     const fileToRead = path.join(this.path, id + '.json');
-    return fs.readFile(fileToRead).then((result) => {
-      return JSON.parse(result);
-    });
+    return fs
+      .readFile(fileToRead)
+      .then((result) => {
+        return JSON.parse(result);
+      })
+      .catch(() => {
+        return null;
+      });
   }
 }
