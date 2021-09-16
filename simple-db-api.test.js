@@ -5,12 +5,12 @@ describe('simple database', () => {
     const rootDir = './__test__rootdir';
 
     beforeEach(() => {
-        rm(rootDir, { force: true, recursive: true })
+        return rm(rootDir, { force: true, recursive: true })
             .then(mkdir(rootDir))
             .catch((err) => console.error(err));
     });
 
-    it('should return an id when an object is saved', () => {
+    it.only('should return an id when an object is saved', () => {
         const simpleDb = new SimpleDb(rootDir);
         const fakeId = simpleDb.save({ data: 'fake data' });
         expect(fakeId).toEqual(expect.any(String));
