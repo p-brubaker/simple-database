@@ -9,7 +9,7 @@ describe('simple database', () => {
         mkdirSync(rootDir);
     });
 
-    it('should return an id when an object is saved', () => {
+    it.only('should return an id when an object is saved', () => {
         const simpleDb = new SimpleDb(rootDir);
         return simpleDb.save({ data: 'fake data' }).then((id) => {
             expect(id).toEqual(expect.any(String));
@@ -79,7 +79,7 @@ describe('simple database', () => {
         });
     });
 
-    it.skip('should update an object', () => {
+    it('should update an object', () => {
         const simpleDb = new SimpleDb(rootDir);
         const fakeObject = { data: 'fake' };
         const objToUpDateWith = { data: 'updated fake' };
