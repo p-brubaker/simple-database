@@ -14,12 +14,12 @@ export class SimpleDb {
     obj.id = this.generateId();
     const pathToWrite = path.join(this.path, obj.id + '.json');
     return fs.writeFile(pathToWrite, JSON.stringify(obj)).then(() => {
-      return obj.id;
+      return obj.id + '.json';
     });
   }
 
   get(id) {
-    const fileToRead = path.join(this.path, id + '.json');
+    const fileToRead = path.join(this.path, id);
     return fs
       .readFile(fileToRead)
       .then((result) => {
@@ -28,5 +28,15 @@ export class SimpleDb {
       .catch(() => {
         return null;
       });
+  }
+
+  getAll() {
+    return fs.readdir(this.path).then((files) => {
+      return Promise.all(
+        files.map((file) => {
+          return this.get(file);
+        })
+      );
+    });
   }
 }

@@ -37,7 +37,7 @@ describe('simple database', () => {
         });
     });
 
-    it.skip('should return all the objects in the root directory', () => {
+    it('should return all the objects in the root directory', () => {
         const simpleDb = new SimpleDb(rootDir);
         const allObjects = [
             { data: 'fake1' },
@@ -45,14 +45,13 @@ describe('simple database', () => {
             { data: 'fake3' },
         ];
         allObjects.forEach((obj) => simpleDb.save(obj));
-        const getAllResult = simpleDb
-            .getAll()
-            .catch((err) => console.error(err));
-        expect(getAllResult).toStrictEqual([
-            { id: expect.any(String), data: 'fake1' },
-            { id: expect.any(String), data: 'fake2' },
-            { id: expect.any(String), data: 'fake3' },
-        ]);
+        return simpleDb.getAll().then((results) => {
+            expect(results).toStrictEqual([
+                { id: expect.any(String), data: 'fake1' },
+                { id: expect.any(String), data: 'fake2' },
+                { id: expect.any(String), data: 'fake3' },
+            ]);
+        });
     });
 
     it.skip('should remove an object', () => {
