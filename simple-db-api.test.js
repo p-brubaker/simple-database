@@ -1,7 +1,7 @@
 import { rmdirSync, mkdirSync } from 'fs';
 import { SimpleDb } from './simple-db-api.js';
 
-describe('simple database', () => {
+describe.skip('simple database', () => {
     const rootDir = '__test__rootdir';
 
     beforeEach(() => {
