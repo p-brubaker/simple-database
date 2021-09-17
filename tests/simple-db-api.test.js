@@ -1,17 +1,13 @@
 import { rm, mkdir } from 'fs/promises';
-import { SimpleDb } from './simple-db-api.js';
+import { SimpleDb } from '../simple-db-api.js';
 
 describe('simple database', () => {
-    const rootDir = './__test__rootdir';
+    const rootDir = '../__test__rootdir';
 
     beforeEach(() => {
         return rm(rootDir, { force: true, recursive: true }).then(() => {
             return mkdir(rootDir);
         });
-    });
-
-    it.only('test', () => {
-        expect(1 + 1).toEqual(2);
     });
 
     it('should return an id when an object is saved', () => {
