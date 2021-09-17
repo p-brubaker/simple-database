@@ -1,15 +1,16 @@
-import { rmdirSync, mkdirSync } from 'fs';
-import { SimpleDb } from './simple-db-api.js';
+import { rm, mkdir } from 'fs/promises';
+import { SimpleDb } from '../simple-db-api.js';
 
-describe.skip('simple database', () => {
-    const rootDir = '__test__rootdir';
+describe('simple database', () => {
+    const rootDir = '../__test__store';
 
     beforeEach(() => {
-        rmdirSync(rootDir, { recursive: true, force: true });
-        mkdirSync(rootDir);
+        return rm(rootDir, { force: true, recursive: true }).then(() => {
+            return mkdir(rootDir);
+        });
     });
 
-    it.only('should return an id when an object is saved', () => {
+    it('should return an id when an object is saved', () => {
         const simpleDb = new SimpleDb(rootDir);
         return simpleDb.save({ data: 'fake data' }).then((id) => {
             expect(id).toEqual(expect.any(String));
@@ -39,11 +40,11 @@ describe.skip('simple database', () => {
 
     it('should return all the objects in the root directory', () => {
         const simpleDb = new SimpleDb(rootDir);
-        const allObjects = new Set([
+        const allObjects = [
             { data: 'fake1' },
             { data: 'fake2' },
             { data: 'fake3' },
-        ]);
+        ];
         allObjects.forEach((obj) => simpleDb.save(obj));
         return simpleDb.getAll().then((results) => {
             expect(new Set(results)).toStrictEqual(
@@ -53,6 +54,23 @@ describe.skip('simple database', () => {
                     { id: expect.any(String), data: 'fake3' },
                 ])
             );
+        });
+    });
+
+    it('should update an object', () => {
+        const simpleDb = new SimpleDb(rootDir);
+        const fakeObject = { data: 'fake' };
+        return simpleDb.save(fakeObject).then((id) => {
+            return simpleDb
+                .update(id, { id, data: 'updated fake' })
+                .then((id) => {
+                    return simpleDb.get(id).then((result) => {
+                        expect(result).toStrictEqual({
+                            id: expect.any(String),
+                            data: 'updated fake',
+                        });
+                    });
+                });
         });
     });
 
@@ -75,24 +93,6 @@ describe.skip('simple database', () => {
                             data: 'fake1',
                         },
                     ]);
-                });
-        });
-    });
-
-    it('should update an object', () => {
-        const simpleDb = new SimpleDb(rootDir);
-        const fakeObject = { data: 'fake' };
-        const objToUpDateWith = { data: 'updated fake' };
-        simpleDb.save(fakeObject).then((id) => {
-            return simpleDb
-                .update(id, { ...objToUpDateWith, id })
-                .then((id) => {
-                    return simpleDb.get(id).then((updated) => {
-                        expect(updated).toStrictEqual({
-                            id: expect.any(String),
-                            data: 'updated fake',
-                        });
-                    });
                 });
         });
     });
