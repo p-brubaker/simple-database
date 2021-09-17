@@ -10,6 +10,10 @@ describe('simple database', () => {
         });
     });
 
+    it.only('test', () => {
+        expect(1 + 1).toEqual(2);
+    });
+
     it('should return an id when an object is saved', () => {
         const simpleDb = new SimpleDb(rootDir);
         return simpleDb.save({ data: 'fake data' }).then((id) => {
