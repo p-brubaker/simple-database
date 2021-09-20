@@ -47,8 +47,9 @@ describe('simple database', () => {
         ];
         allObjects.forEach((obj) => simpleDb.save(obj));
         return simpleDb.getAll().then((results) => {
-            expect(new Set(results)).toStrictEqual(
-                new Set([
+            expect(results.length).toEqual(allObjects.length);
+            expect(results).toEqual(
+                expect.arrayContaining([
                     { id: expect.any(String), data: 'fake1' },
                     { id: expect.any(String), data: 'fake2' },
                     { id: expect.any(String), data: 'fake3' },
